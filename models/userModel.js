@@ -32,4 +32,12 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-export default mongoose.model("User", userSchema);
+let users
+try {
+  users = mongoose.model('users')
+} catch (error) {
+  users = mongoose.model("users", userSchema);
+}
+
+
+export default users;
