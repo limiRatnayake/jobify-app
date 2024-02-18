@@ -62,7 +62,7 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
-        action: loginFormAction,
+        action: loginFormAction(queryClient),
       },
       {
         path: "dashboard",
@@ -93,7 +93,7 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <Profile />,
-            action: profileAction,
+            action: profileAction(queryClient),
           },
           {
             path: "Admin",
