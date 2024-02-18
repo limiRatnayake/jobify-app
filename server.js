@@ -7,6 +7,8 @@ import mongoose from "mongoose";
 import { body, validationResult } from "express-validator";
 import cookieParser from "cookie-parser";
 import cloudinary from "cloudinary";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
 
 dotenv.config();
 const app = express();
@@ -42,9 +44,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.resolve(_dirname, "./client/dist")));
 
-app.get("/", (req, res) => {
-  res.send("Hello world");
-});
+app.use(helmet());
+app.use(mongoSanitize());
+// just test routes
+// app.get("/", (req, res) => {
+//   res.send("Hello world");
+// });
 
 // without using a middleware
 // app.post(
@@ -71,9 +76,9 @@ app.get("/", (req, res) => {
 //   }
 // );
 
-app.get("/api/v1/test", (req, res) => {
-  res.json({ msg: "test route" });
-});
+// app.get("/api/v1/test", (req, res) => {
+//   res.json({ msg: "test route" });
+// });
 
 // call the routes
 app.use("/api/v1/jobs", authenticateUser, jobRouter);
