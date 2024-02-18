@@ -10,7 +10,6 @@ import BigSidebar from "../components/BigSidebar";
 import SmallSidebar from "../components/SmallSidebar";
 import Navbar from "../components/Navbar";
 import { createContext, useContext, useState } from "react";
-import { checkDefaultTheme } from "../App";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import { Loading } from "../components";
@@ -26,14 +25,14 @@ export const dashboardLoader = async () => {
   }
 };
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ isDarkThemeEnabled }) => {
   const { user } = useLoaderData();
   const navigate = useNavigate();
   const navigation = useNavigation();
   const isPageLoading = navigation.state === "loading";
 
   const [showSidebar, setShowSidebar] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
+  const [isDarkTheme, setIsDarkTheme] = useState(isDarkThemeEnabled);
 
   const toggleDarkTheme = () => {
     const newDarkTheme = !isDarkTheme;

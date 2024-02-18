@@ -24,6 +24,9 @@ import { deleteJobLoader } from "./pages/DeleteJob";
 import { adminStatsLoader } from "./pages/Admin";
 import { profileAction } from "./pages/Profile";
 import { statsLoader } from "./pages/Stats";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import ErrorElement from "./components/ErrorElement";
 
 export const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -31,7 +34,16 @@ export const checkDefaultTheme = () => {
   return isDarkTheme;
 };
 
-checkDefaultTheme();
+const isDarkThemeEnabled = checkDefaultTheme();
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 10 ,
+    },
+  },
+});
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -54,7 +66,7 @@ const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <DashboardLayout />,
+        element: <DashboardLayout isDarkThemeEnabled={isDarkThemeEnabled} />,
         loader: dashboardLoader,
         children: [
           {
@@ -65,8 +77,8 @@ const router = createBrowserRouter([
           {
             path: "stats",
             element: <Stats />,
-            loader: statsLoader,
-            errorElement: <h4>There was an error...</h4>,
+            loader: statsLoader(queryClient),
+            errorElement: <ErrorElement />,
           },
           {
             path: "all-jobs",
@@ -100,6 +112,11 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />;
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
 };
 export default App;
