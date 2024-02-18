@@ -9,7 +9,7 @@ import Wrapper from "../assets/wrappers/Dashboard";
 import BigSidebar from "../components/BigSidebar";
 import SmallSidebar from "../components/SmallSidebar";
 import Navbar from "../components/Navbar";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import { Loading } from "../components";
@@ -44,6 +44,7 @@ const DashboardLayout = ({ isDarkThemeEnabled, queryClient }) => {
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(isDarkThemeEnabled);
+  const [isAuthError, setIsAuthError] = useState(false);
 
   const toggleDarkTheme = () => {
     const newDarkTheme = !isDarkTheme;
@@ -62,6 +63,23 @@ const DashboardLayout = ({ isDarkThemeEnabled, queryClient }) => {
     queryClient.invalidateQueries();
     toast.success("Logging out");
   };
+
+  customFetch.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error?.response?.status === 401) {
+        setIsAuthError(true);
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  useEffect(() => {
+    if (!isAuthError) return;
+    logoutUser();
+  }, [isAuthError]);
 
   return (
     <DashboardContext.Provider
