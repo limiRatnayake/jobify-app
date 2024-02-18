@@ -82,7 +82,7 @@ app.use("/api/v1/auth", authRouter);
 
 // publicly available the client folder
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./client/dist", "index.html"));
+  res.sendFile(path.resolve(_dirname, "./client/dist", "index.html"));
 });
 
 // resource not found middleware
